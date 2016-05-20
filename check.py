@@ -94,12 +94,6 @@ def checkInstall():
 			return
 
 	try:
-		os.system('pip install -U smtplib')
-	except:
-		print '[x] update smtplib failed.'
-		return
-
-	try:
 		os.system('pip install -U email')
 	except:
 		print '[x] update email failed.'

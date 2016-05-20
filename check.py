@@ -54,9 +54,7 @@ def checkInstall():
 	if not os.path.isfile('/usr/bin/create_ap'):
 		install = raw_input('[?]  create_ap not found in /usr/bin/create_ap, install now? [y/n] ')
 		if install == 'y':
-			os.system('mkdir /tmp/Git && cd /tmp/Git')
-			os.system('git clone https://github.com/oblique/create_ap.git && cd create_ap')
-			os.system('make install')
+			os.system('cd /tmp && git clone https://github.com/oblique/create_ap.git && cd create_ap && make install')
 		else:
 			sys.exit('[x] create_ap not found in /usr/bin/create_ap')
 			return

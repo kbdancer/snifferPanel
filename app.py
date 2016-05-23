@@ -62,6 +62,15 @@ def checkInstall():
 	else:
 		print '[√] make has been installed.'
 
+	if not os.path.isfile('/usr/sbin/make'):
+		install = raw_input('[?] tcpdump not found in /usr/sbin/tcpdump, install now? [y/n] ')
+		if install == 'y':
+			os.system('apt-get -y install tcpdump')
+		else:
+			sys.exit('[x] tcpdump not found in /usr/sbin/tcpdump')
+	else:
+		print '[√] tcpdump has been installed.'
+
 	if not os.path.isfile('/usr/bin/create_ap'):
 		install = raw_input('[?] create_ap not found in /usr/bin/create_ap, install now? [y/n] ')
 		if install == 'y':

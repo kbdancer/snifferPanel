@@ -72,7 +72,7 @@ def checkInstall():
 		print '[√] create_ap has been installed.'
 
 	if not os.path.isfile('/usr/bin/pip') and not os.path.isfile('/usr/local/bin/pip'):
-		install = raw_input('[?]  pip not found in /usr/bin/pip, install now? [y/n] ')
+		install = raw_input('[?] pip not found in /usr/bin/pip, install now? [y/n] ')
 		if install == 'y':
 			os.system('cd /tmp && wget https://bootstrap.pypa.io/get-pip.py')
 			os.system('python /tmp/get-pip.py')
@@ -81,35 +81,36 @@ def checkInstall():
 	else:
 		print '[√] pip has been installed.'
 
-	# update pip and python modules
+	try:
+		__import__('scapy')
+		print '[√] Module scapy been installed.'
+	except:
+		install = raw_input('[?] Module scapy not found in python, install now? [y/n] ')
+		if install == 'y':
+			os.system('pip install scapy')
+		else:
+			sys.exit('[x] No module named scapy')
+	# update pip and python Modules
+
+	print '[*] Update python modules.'
+	print '-'*80
 
 	try:
 		os.system('pip install -U pip')
 	except:
-		sys.exit('[x] update pip failed.')
+		sys.exit('[x] Update pip failed.')
 
 	try:
-		__import__('scapy')
-		print '[√] module scapy been installed.'
+		os.system('pip install -U scapy')
 	except:
-		install = raw_input('[?] module scapy not found in python, install now? [y/n] ')
-		if install == 'y':
-			os.system('pip install -U scapy')
-		else:
-			sys.exit('[x] No module named scapy')
+		sys.exit('[x] Update scapy failed.')
 
 	try:
 		os.system('pip install -U email')
 	except:
-		sys.exit('[x] update email failed.')
+		sys.exit('[x] Update email failed.')
 
 def doCreate():
-	net_iface = 'eth0'
-	ap_iface = 'wlan0'
-	ap_ssid = 'FreeWifi'
-	ap_key = ''
-	ap_getway = '192.168.0.1'
-	ap_dns = '8.8.8.8'
 	try:
 		os.system('create_ap %s %s %s %s -g %s --dhcp-dns %s --no-virt' % (ap_iface,net_iface,ap_ssid,ap_key,ap_getway,ap_dns))
 	except Exception,e:
@@ -117,7 +118,7 @@ def doCreate():
 
 def dosniff():
 	try:
-		subprocess.Popen(['python',sys.path[0]+'/sniff.py'])
+		subprocess.Popen(['python',sys.path[0]+'/sniff.py',net_iface])
 	except Exception,e:
 		sys.exit('[x] do sniff failed.Exception is %s' % e)
 
@@ -127,6 +128,15 @@ if __name__ == '__main__':
 	print "|Blog www.92ez.com Email non3gov@gmail.com	|"
 	print "|You should know what you are doing.	  	|"
 	print "================================================="
+
+	global net_iface,ap_iface,ap_ssid,ap_key,ap_getway,ap_dns
+
+	net_iface = 'eth0'
+	ap_iface = 'wlan0'
+	ap_ssid = 'FreeWifi'
+	ap_key = ''
+	ap_getway = '192.168.0.1'
+	ap_dns = '8.8.8.8'
 
 	print '\n[*] Checking required...\n'
 	checkInstall()

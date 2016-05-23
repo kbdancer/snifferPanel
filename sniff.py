@@ -39,7 +39,7 @@ def sendMail(receiver, title, body):
 		sys.exit('[x] Send email failed! Exception is %s.' % e)
 
 def doSniffer():
-	sniff_iface = 'eth0'
+	sniff_iface = sys.argv[1]
 	try:
 		print '[√] Sniffing on '+sniff_iface+'!'
 		sniff(iface = sniff_iface,prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")

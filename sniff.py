@@ -34,7 +34,7 @@ def sendMail(receiver, title, body):
 		s = smtplib.SMTP(host, port)
 		s.login(sender, pwd)
 		s.sendmail(sender, receiver, msg.as_string())
-		print '[*] The mail named %s to %s is sended successly.' % (title, receiver)
+		print '[*] The mail named %s to %s is sent successly.' % (title, receiver)
 	except Exception,e:
 		sys.exit('[x] Send email failed! Exception is %s.' % e)
 

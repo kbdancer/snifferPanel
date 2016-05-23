@@ -17,14 +17,14 @@ def checkInstall():
 	else:
 		print '[√] hostapd has been installed.'
 
-	if not os.path.isfile('/usr/bin/dnsmap'):
-		install = raw_input('[?]  dnsmap not found in /usr/bin/dnsmap, install now? [y/n] ')
+	if not os.path.isfile('/usr/sbin/dnsmasq'):
+		install = raw_input('[?]  dnsmasq not found in /usr/sbin/dnsmasq, install now? [y/n] ')
 		if install == 'y':
-			os.system('apt-get -y install dnsmap')
+			os.system('apt-get -y install dnsmasq')
 		else:
-			sys.exit('[x] dnsmap not found in /usr/bin/dnsmap')
+			sys.exit('[x] dnsmasq not found in /usr/sbin/dnsmasq')
 	else:
-		print '[√] dnsmap has been installed.'
+		print '[√] dnsmasq has been installed.'
 
 	if not os.path.isfile('/usr/sbin/rfkill'):
 		install = raw_input('[?]  rfkill not found in /usr/sbin/rfkill, install now? [y/n] ')
@@ -106,8 +106,8 @@ def checkInstall():
 def doCreate():
 	net_iface = 'eth0'
 	ap_iface = 'wlan0'
-	ap_ssid = 'MyWifi'
-	ap_key = '12345678'
+	ap_ssid = 'hysund_dev'
+	ap_key = 'hysunddev1102'
 	ap_getway = '192.168.0.1'
 	ap_dns = '8.8.8.8'
 	try:

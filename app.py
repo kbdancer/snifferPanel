@@ -71,7 +71,7 @@ def checkInstall():
 	else:
 		print '[√] create_ap has been installed.'
 
-	if not os.path.isfile('/usr/bin/pip'):
+	if not os.path.isfile('/usr/bin/pip') and not os.path.isfile('/usr/local/bin/pip'):
 		install = raw_input('[?]  pip not found in /usr/bin/pip, install now? [y/n] ')
 		if install == 'y':
 			os.system('cd /tmp && wget https://bootstrap.pypa.io/get-pip.py')
@@ -106,8 +106,8 @@ def checkInstall():
 def doCreate():
 	net_iface = 'eth0'
 	ap_iface = 'wlan0'
-	ap_ssid = 'hysund_dev'
-	ap_key = 'hysunddev1102'
+	ap_ssid = 'FreeWifi'
+	ap_key = ''
 	ap_getway = '192.168.0.1'
 	ap_dns = '8.8.8.8'
 	try:

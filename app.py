@@ -81,12 +81,12 @@ def checkInstall():
 		print '[√] create_ap has been installed.'
 
 	if not os.path.isfile('/usr/bin/pip') and not os.path.isfile('/usr/local/bin/pip'):
-		install = raw_input('[?] pip not found in /usr/bin/pip, install now? [y/n] ')
+		install = raw_input('[?] pip not found, install now? [y/n] ')
 		if install == 'y':
 			os.system('cd /tmp && wget https://bootstrap.pypa.io/get-pip.py')
 			os.system('python /tmp/get-pip.py')
 		else:
-			sys.exit('[x] pip not found in /usr/bin/pip')
+			sys.exit('[x] pip not found')
 	else:
 		print '[√] pip has been installed.'
 

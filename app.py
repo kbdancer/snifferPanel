@@ -121,13 +121,19 @@ def checkInstall():
 
 def doCreate():
 	try:
-		os.system('create_ap %s %s %s %s -g %s --dhcp-dns %s --no-virt' % (ap_iface,net_iface,ap_ssid,ap_key,ap_getway,ap_dns))
+		os.system('create_ap %s %s %s %s %s -g %s --dhcp-dns %s --no-virt' % (mode,ap_iface,net_iface,ap_ssid,ap_key,ap_getway,ap_dns))
 	except Exception,e:
 		sys.exit('[x] Create AP failed! Please check!')
 
 def dosniff():
 	try:
-		subprocess.Popen(['python',sys.path[0]+'/sniff.py',net_iface])
+		sniff_iface = ''
+		if mode == '':
+			sniff_iface = ap_iface
+		else:
+			sniff_iface = net_iface
+
+		subprocess.Popen(['python',sys.path[0]+'/sniff.py',sniff_iface])
 	except Exception,e:
 		sys.exit('[x] do sniff failed.Exception is %s' % e)
 
@@ -138,7 +144,7 @@ if __name__ == '__main__':
 	print "|You should know what you are doing.	  	|"
 	print "================================================="
 
-	global net_iface,ap_iface,ap_ssid,ap_key,ap_getway,ap_dns
+	global net_iface,ap_iface,ap_ssid,ap_key,ap_getway,ap_dns,mode
 
 	net_iface = 'eth0'
 	ap_iface = 'wlan0'
@@ -146,6 +152,12 @@ if __name__ == '__main__':
 	ap_key = ''
 	ap_getway = '192.168.0.1'
 	ap_dns = '8.8.8.8'
+	mode = ''
+
+	if net_iface == '':
+		mode = '-n'
+	else:
+		mode = ''
 
 	print '\n[*] Checking required...\n'
 	checkInstall()

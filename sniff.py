@@ -13,13 +13,15 @@ def dealPackage(packet):
 
 	lines = packet.sprintf("{Raw:%Raw.load%}").replace("'","").split(r"\r\n")
 
-	# saveToDB(lines)
+	# if you want to save all http requests !
+	# print '-'*90
+	# saveToDB(lines) 
 
+	# if you want to save http requests only post or get data is null
 	if len(lines[-1]) > 1 and len(lines) > 1:
 		print '-'*90
-		# reciver,title,body
-		# sendMail('***@qq.com','Notice ! Found Data!','<br>'.join(lines))
 		saveToDB(lines)
+		# sendMail('***@qq.com','Notice ! Found Data!','<br>'.join(lines))
 
 def saveToDB(data):
 

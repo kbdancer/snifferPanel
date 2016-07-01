@@ -146,13 +146,13 @@ if __name__ == '__main__':
 
 	global net_iface,ap_iface,ap_ssid,ap_key,ap_getway,ap_dns,mode
 
-	net_iface = 'eth0'
-	ap_iface = 'wlan0'
-	ap_ssid = 'FreeWifi'
-	ap_key = ''
-	ap_getway = '192.168.0.1'
-	ap_dns = '8.8.8.8'
-	mode = ''
+	net_iface = 'eth0' 		# if you have no interface to connect network, you should set ''
+	ap_iface = 'wlan0' 		# the ap interface you want to use 
+	ap_ssid = 'FreeWifi' 	# you know
+	ap_key = '' 			# wifi password
+	ap_getway = '192.168.0.1' 
+	ap_dns = '114.114.115.115'		# default
+	mode = '' 
 
 	if net_iface == '':
 		mode = '-n'

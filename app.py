@@ -128,10 +128,10 @@ def doCreate():
 def dosniff():
 	try:
 		sniff_iface = ''
-		if mode == '':
-			sniff_iface = ap_iface
-		else:
+		if if_net:
 			sniff_iface = net_iface
+		else:
+			sniff_iface = ap_iface
 
 		subprocess.Popen(['python',sys.path[0]+'/sniff.py',sniff_iface])
 	except Exception,e:
@@ -144,7 +144,7 @@ if __name__ == '__main__':
 	print "|You should know what you are doing.	  	|"
 	print "================================================="
 
-	global net_iface,ap_iface,ap_ssid,ap_key,ap_getway,ap_dns,mode
+	global net_iface,ap_iface,ap_ssid,ap_key,ap_getway,ap_dns,if_net
 
 	net_iface = 'eth0' 		# if you have no interface to connect network, you should set ''
 	ap_iface = 'wlan0' 		# the ap interface you want to use 
@@ -152,12 +152,12 @@ if __name__ == '__main__':
 	ap_key = '' 			# wifi password
 	ap_getway = '192.168.0.1' 
 	ap_dns = '114.114.115.115'		# default
-	mode = '' 
+	if_net = True 
 
 	if net_iface == '':
-		mode = '-n'
+		if_net = False
 	else:
-		mode = ''
+		if_net = True
 
 	print '\n[*] Checking required...\n'
 	checkInstall()
